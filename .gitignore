@@ -1,0 +1,24 @@
+# Build output generated from source
+**/bin/
+**/obj/
+**/.vs/
+**/Debug/
+**/Release/
+**/x64/
+**/RDR2Coop.A1B2C3D4/
+RDR2Coop.Client.Cpp/dist/
+RDR2Coop.Plugins/build/
+
+# Local logs, backups, and debug artifacts
+InstallationLog.txt
+backups/
+*.log
+*.pdb
+*.iobj
+*.ipch
+*.ilk
+*.recipe
+*.tlog/
+*.lastbuildstate
+
+# Keep the packaged dist/ binaries and runtime settings tracked.

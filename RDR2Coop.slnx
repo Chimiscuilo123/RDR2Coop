@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="RDR2Coop.Client/RDR2Coop.Client.csproj" />
+  <Project Path="RDR2Coop.Core/RDR2Coop.Core.csproj" />
+  <Project Path="RDR2Coop.Server/RDR2Coop.Server.csproj" />
+</Solution>

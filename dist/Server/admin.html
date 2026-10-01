@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>RDR2Coop — Admin</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Special+Elite&display=swap');
+
+*{margin:0;padding:0;box-sizing:border-box}
+
+:root{
+  --bg:      #0e0603;
+  --panel:   #190c07;
+  --panel2:  #201008;
+  --border:  #3e2410;
+  --border2: #5e3818;
+  --gold:    #c9a84c;
+  --gold2:   #f0c060;
+  --red:     #c41e1e;
+  --red2:    #e03535;
+  --text:    #d4c5a9;
+  --text2:   #8a7a60;
+  --green:   #4e7a2e;
+  --green2:  #70a845;
+}
+
+body{
+  font-family:'Special Elite',cursive;
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+  display:flex;flex-direction:column;
+}
+
+/* ── Header ── */
+header{
+  background:linear-gradient(180deg,#1e0a04 0%,#120603 100%);
+  border-bottom:2px solid var(--border2);
+  padding:12px 20px;
+  display:flex;align-items:center;justify-content:space-between;
+  position:sticky;top:0;z-index:100;flex-shrink:0;
+}
+.logo{font-size:22px;color:var(--red);letter-spacing:3px;text-shadow:0 0 18px #c41e1e55}
+.logo small{display:block;font-size:10px;color:var(--text2);letter-spacing:2px;margin-top:1px}
+.pills{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.pill{
+  background:var(--panel2);border:1px solid var(--border);
+  border-radius:3px;padding:4px 11px;font-size:11px;color:var(--text2);
+  display:flex;align-items:center;gap:6px;
+}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--green2);box-shadow:0 0 5px var(--green2);flex-shrink:0}
+.dot.off{background:var(--red);box-shadow:0 0 5px var(--red)}
+
+/* ── Layout ── */
+.layout{display:grid;grid-template-columns:340px 1fr;flex:1;overflow:hidden}
+
+/* ── Sidebar ── */
+.sidebar{border-right:1px solid var(--border);background:var(--panel);display:flex;flex-direction:column;overflow:hidden}
+.sidebar-scroll{flex:1;overflow-y:auto;padding:14px}
+
+/* ── Main ── */
+.main{overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:12px}
+
+/* ── Section label ── */
+.label{
+  font-size:10px;text-transform:uppercase;letter-spacing:2px;
+  color:var(--gold);border-bottom:1px solid var(--border);
+  padding-bottom:5px;margin-bottom:10px;
+  display:flex;align-items:center;gap:7px;
+}
+.label::before{content:'';display:block;width:2px;height:12px;background:var(--gold);border-radius:1px}
+
+/* ── Card ── */
+.card{background:var(--panel);border:1px solid var(--border);border-radius:3px;padding:13px}
+
+/* ── Player cards ── */
+.no-players{text-align:center;font-size:12px;color:var(--text2);padding:24px 0;font-style:italic}
+.player-card{
+  background:var(--panel2);border:1px solid var(--border);
+  border-radius:3px;padding:8px 10px;margin-bottom:6px;
+  display:flex;align-items:center;gap:9px;transition:border-color .12s;
+}
+.player-card:hover{border-color:var(--border2)}
+.avatar{
+  width:34px;height:34px;border-radius:50%;
+  background:linear-gradient(135deg,#3a1508,#6e2e0e);
+  border:1px solid var(--border2);
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;color:var(--gold);flex-shrink:0;
+}
+.p-info{flex:1;min-width:0}
+.p-name{font-size:12px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.p-meta{font-size:9px;color:var(--text2);margin-top:2px;line-height:1.4}
+.badge{
+  display:inline-block;font-size:8px;padding:1px 5px;border-radius:2px;
+  letter-spacing:.5px;margin-left:4px;vertical-align:middle;line-height:14px;
+}
+.badge.admin{background:#7a5e00;color:var(--gold2)}
+.badge.plug{background:#1a3010;color:var(--green2)}
+.p-actions{display:flex;gap:3px;flex-shrink:0}
+.bsm{
+  font-family:'Special Elite',cursive;font-size:9px;
+  padding:3px 7px;border-radius:2px;border:1px solid var(--border2);
+  background:transparent;color:var(--text2);cursor:pointer;
+  text-transform:uppercase;letter-spacing:.5px;transition:all .1s;
+}
+.bsm:hover{background:var(--panel2);color:var(--text);border-color:var(--gold)}
+.bsm.red:hover{background:#280505;color:var(--red2);border-color:var(--red)}
+.bsm.gold{color:var(--gold)}
+.bsm.gold:hover{background:#201200;border-color:var(--gold2);color:var(--gold2)}
+
+/* ── Broadcast bar ── */
+.bcast-wrap{padding:12px 14px;border-top:1px solid var(--border);flex-shrink:0}
+.row{display:flex;gap:6px}
+
+/* ── Buttons ── */
+.btn-grid{display:flex;flex-wrap:wrap;gap:6px}
+.btn{
+  font-family:'Special Elite',cursive;font-size:11px;
+  padding:7px 13px;border-radius:3px;border:1px solid var(--border2);
+  background:linear-gradient(180deg,#2c1208 0%,#1c0a05 100%);
+  color:var(--text);cursor:pointer;text-transform:uppercase;letter-spacing:.8px;transition:all .1s;
+}
+.btn:hover{background:linear-gradient(180deg,#461a0e 0%,#2e1008 100%);border-color:var(--red);color:var(--red2)}
+.btn.gold{background:linear-gradient(180deg,#362000 0%,#221400 100%);border-color:#5a4000;color:var(--gold)}
+.btn.gold:hover{background:linear-gradient(180deg,#503000 0%,#362000 100%);border-color:var(--gold2);color:var(--gold2)}
+.btn.active{background:linear-gradient(180deg,#581e0e 0%,#381208 100%);border-color:var(--red2);color:#fff}
+
+/* ── Time row ── */
+.time-row{display:flex;align-items:center;gap:7px;margin-top:10px}
+.ti{
+  font-family:'Special Elite',cursive;font-size:14px;text-align:center;
+  width:52px;padding:5px;border-radius:3px;
+  border:1px solid var(--border2);background:var(--bg);color:var(--gold);
+}
+.ti:focus{outline:none;border-color:var(--gold)}
+.sep{font-size:18px;color:var(--border2)}
+
+/* ── Console ── */
+.console-wrap{position:relative}
+#log{
+  height:190px;overflow-y:auto;
+  font-family:'Courier New',monospace;font-size:11px;
+  background:#050302;padding:8px 10px;
+  border-radius:2px;border:1px solid var(--border);
+  margin-top:8px;line-height:1.6;
+}
+.l-ts{color:#3a2a1a;margin-right:5px}
+.l-cmd{color:var(--gold)}
+.l-ok{color:var(--green2)}
+.l-err{color:var(--red)}
+.l-info{color:var(--text2)}
+.l-hint{color:#5a7a3a;font-style:italic}
+
+/* ── Autocomplete dropdown ── */
+#autocomplete{
+  position:absolute;bottom:calc(100% + 2px);left:0;right:0;
+  background:var(--panel2);border:1px solid var(--border2);
+  border-radius:3px;z-index:200;
+  display:none;max-height:220px;overflow-y:auto;
+}
+.ac-item{
+  padding:7px 12px;cursor:pointer;font-size:11px;
+  display:flex;align-items:baseline;gap:10px;
+  border-bottom:1px solid var(--border);
+  transition:background .08s;
+}
+.ac-item:last-child{border-bottom:none}
+.ac-item:hover,.ac-item.selected{background:#2a1208}
+.ac-cmd{color:var(--gold);font-family:'Courier New',monospace;flex-shrink:0;font-size:11px}
+.ac-args{color:var(--text2);font-size:10px;font-family:'Courier New',monospace;flex-shrink:0}
+.ac-desc{color:var(--text2);font-size:10px;flex:1;text-align:right}
+
+/* ── Hint bar (under input) ── */
+#hint-bar{
+  font-size:10px;color:var(--text2);
+  font-family:'Courier New',monospace;
+  min-height:16px;margin-top:4px;padding-left:2px;
+}
+#hint-bar b{color:var(--gold)}
+#hint-bar .h-desc{color:#6a8a50}
+
+#cmd-inp{
+  flex:1;font-family:'Special Elite',cursive;font-size:12px;
+  padding:7px 10px;border-radius:3px;
+  border:1px solid var(--border2);background:var(--bg);color:var(--text);
+}
+#cmd-inp:focus{outline:none;border-color:var(--gold)}
+#bcast-inp{
+  flex:1;font-family:'Special Elite',cursive;font-size:12px;
+  padding:7px 10px;border-radius:3px;
+  border:1px solid var(--border2);background:var(--bg);color:var(--text);
+}
+#bcast-inp:focus{outline:none;border-color:var(--gold)}
+
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:var(--border2)}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div>
+    <div class="logo">RDR2 COOP<small>Admin Panel</small></div>
+  </div>
+  <div class="pills">
+    <div class="pill"><span class="dot" id="s-dot"></span><span id="s-name">Connecting…</span></div>
+    <div class="pill">Port <b id="s-port">—</b></div>
+    <div class="pill">👥 <b id="s-cnt">0</b> / <b id="s-max">—</b></div>
+    <div class="pill">🕐 <span id="s-clock">—</span></div>
+  </div>
+</header>
+
+<!-- LAYOUT -->
+<div class="layout">
+
+  <!-- SIDEBAR: Players -->
+  <div class="sidebar">
+    <div class="sidebar-scroll">
+      <div class="label">Players (<span id="pcount">0</span>)</div>
+      <div id="players"><div class="no-players">No players connected</div></div>
+    </div>
+    <div class="bcast-wrap">
+      <div class="label" style="margin-bottom:8px">Broadcast Message</div>
+      <div class="row">
+        <input id="bcast-inp" placeholder="Message to all players…"
+               onkeydown="if(event.key==='Enter')broadcast()">
+        <button class="btn gold" onclick="broadcast()">Send</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN: Controls -->
+  <div class="main">
+
+    <!-- Weather -->
+    <div class="card">
+      <div class="label" style="justify-content:space-between">
+        <span style="display:flex;align-items:center;gap:7px">
+          <span style="display:block;width:2px;height:12px;background:var(--gold);border-radius:1px"></span>
+          Weather
+        </span>
+        <span style="display:flex;gap:5px">
+          <button class="btn active" id="btn-wlock" onclick="setWeatherLock(true)"  style="padding:3px 9px;font-size:9px">🔒 Lock</button>
+          <button class="btn"        id="btn-wunlock" onclick="setWeatherLock(false)" style="padding:3px 9px;font-size:9px">🔓 Unlock</button>
+        </span>
+      </div>
+      <div class="btn-grid">
+        <button class="btn" onclick="cmd('/weather sunny')">🌞 Sunny</button>
+        <button class="btn" onclick="cmd('/weather clear')">☀ Clear</button>
+        <button class="btn" onclick="cmd('/weather clouds')">☁ Cloudy</button>
+        <button class="btn" onclick="cmd('/weather overcast')">⛅ Overcast</button>
+        <button class="btn" onclick="cmd('/weather highpressure')">🌤 High Pressure</button>
+        <button class="btn" onclick="cmd('/weather misty')">🌁 Misty</button>
+        <button class="btn" onclick="cmd('/weather drizzle')">🌦 Drizzle</button>
+        <button class="btn" onclick="cmd('/weather rain')">🌧 Rain</button>
+        <button class="btn" onclick="cmd('/weather thunder')">⛈ Thunder</button>
+        <button class="btn" onclick="cmd('/weather hurricane')">🌀 Hurricane</button>
+        <button class="btn" onclick="cmd('/weather fog')">🌫 Fog</button>
+        <button class="btn" onclick="cmd('/weather snowlight')">🌨 Light Snow</button>
+        <button class="btn" onclick="cmd('/weather snow')">❄ Snow</button>
+        <button class="btn" onclick="cmd('/weather blizzard')">❄❄ Blizzard</button>
+        <button class="btn" onclick="cmd('/weather hail')">🌩 Hail</button>
+        <button class="btn" onclick="cmd('/weather sandstorm')">🌪 Sandstorm</button>
+      </div>
+    </div>
+
+    <!-- Time -->
+    <div class="card">
+      <div class="label" style="justify-content:space-between">
+        <span style="display:flex;align-items:center;gap:7px">
+          <span style="display:block;width:2px;height:12px;background:var(--gold);border-radius:1px"></span>
+          Time of Day
+        </span>
+        <span style="display:flex;gap:5px">
+          <button class="btn active" id="btn-tlock" onclick="setTimeLock(true)"  style="padding:3px 9px;font-size:9px">🔒 Lock</button>
+          <button class="btn"        id="btn-tunlock" onclick="setTimeLock(false)" style="padding:3px 9px;font-size:9px">🔓 Unlock</button>
+        </span>
+      </div>
+      <div class="btn-grid">
+        <button class="btn" onclick="cmd('/time 5 0')">🌄 Pre-Dawn (5:00)</button>
+        <button class="btn" onclick="cmd('/time 6 0')">🌅 Dawn (6:00)</button>
+        <button class="btn" onclick="cmd('/time 9 0')">🌤 Morning (9:00)</button>
+        <button class="btn" onclick="cmd('/time 12 0')">☀ Noon (12:00)</button>
+        <button class="btn" onclick="cmd('/time 15 0')">🌞 Afternoon (15:00)</button>
+        <button class="btn" onclick="cmd('/time 18 0')">🌇 Dusk (18:00)</button>
+        <button class="btn" onclick="cmd('/time 20 0')">🌆 Evening (20:00)</button>
+        <button class="btn" onclick="cmd('/time 0 0')">🌙 Midnight (0:00)</button>
+      </div>
+      <div class="time-row">
+        <input class="ti" id="th" type="number" min="0" max="23" value="12">
+        <span class="sep">:</span>
+        <input class="ti" id="tm" type="number" min="0" max="59" value="0">
+        <button class="btn" onclick="setTime()">Apply Time</button>
+      </div>
+    </div>
+
+    <!-- World Events -->
+    <div class="card">
+      <div class="label">World Events</div>
+      <div class="btn-grid">
+        <button class="btn gold active" id="btn-eon"  onclick="setEvents(true)">✔ Events ON</button>
+        <button class="btn"            id="btn-eoff" onclick="setEvents(false)">✖ Events OFF</button>
+        <button class="btn" onclick="cmd('/pcmd all ambush')">⚔ Ambush</button>
+        <button class="btn" onclick="cmd('/pcmd all spawnanimal wolf')">🐺 Wolf</button>
+        <button class="btn" onclick="cmd('/pcmd all spawnanimal bear')">🐻 Bear</button>
+        <button class="btn" onclick="cmd('/pcmd all spawnanimal cougar')">🦁 Cougar</button>
+        <button class="btn" onclick="cmd('/pcmd all spawnanimal alligator')">🐊 Alligator</button>
+      </div>
+    </div>
+
+    <!-- Console -->
+    <div class="card" style="flex:1">
+      <div class="label">Console</div>
+      <div id="log"></div>
+      <div class="console-wrap" style="margin-top:8px">
+        <div id="autocomplete"></div>
+        <div class="row">
+          <input id="cmd-inp" placeholder="Type a command… (/ to browse all)"
+                 oninput="onInput()" onkeydown="handleKey(event)"
+                 onfocus="onInput()" onblur="setTimeout(hideAc,150)">
+          <button class="btn" onclick="sendCmd()">Run</button>
+          <button class="btn" onclick="$('log').innerHTML=''" style="padding:7px 10px" title="Clear">✕</button>
+        </div>
+        <div id="hint-bar"></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// ── Helpers ──────────────────────────────────────────────────────────
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+function ts(){return[new Date().getHours(),new Date().getMinutes(),new Date().getSeconds()].map(v=>String(v).padStart(2,'0')).join(':')}
+
+// ── Console log ───────────────────────────────────────────────────────
+function log(msg,cls='l-info'){
+  const el=$('log');
+  el.innerHTML+=`<div><span class="l-ts">[${ts()}]</span><span class="${cls}">${msg}</span></div>`;
+  el.scrollTop=el.scrollHeight;
+}
+
+// ── Command definitions ───────────────────────────────────────────────
+// Each entry: { cmd, args, desc, example }
+const CMDS = [
+  {cmd:'/weather', args:'<type>', desc:'Set weather for all players',
+   opts:['sunny','clear','clouds','overcast','highpressure','misty',
+         'drizzle','rain','thunder','hurricane','fog',
+         'snowlight','snow','blizzard','hail','sandstorm'],
+   example:'/weather rain'},
+  {cmd:'/wlock',   args:'', desc:'Lock weather — server keeps broadcasting current weather',
+   example:'/wlock'},
+  {cmd:'/wunlock', args:'', desc:'Unlock weather — clients control their own weather',
+   example:'/wunlock'},
+  {cmd:'/time',    args:'<hour> <min>', desc:'Set time of day for all players (24h)',
+   example:'/time 12 0'},
+  {cmd:'/tlock',   args:'', desc:'Lock time — server keeps broadcasting current hour',
+   example:'/tlock'},
+  {cmd:'/tunlock', args:'', desc:'Unlock time — game clock advances naturally',
+   example:'/tunlock'},
+  {cmd:'/say',     args:'<message>', desc:'Broadcast a chat message as SERVER',
+   example:'/say Welcome to the server!'},
+  {cmd:'/kick',    args:'<name>', desc:'Disconnect a player from the server',
+   example:'/kick John'},
+  {cmd:'/op',      args:'<name>', desc:'Grant admin privileges to a player',
+   example:'/op John'},
+  {cmd:'/deop',    args:'<name>', desc:'Revoke admin privileges from a player',
+   example:'/deop John'},
+  {cmd:'/tp',      args:'<dest> [src]', desc:'Teleport all (or src) to dest player',
+   example:'/tp John'},
+  {cmd:'/pcmd',    args:'<all|name> <cmd> [args]', desc:'Send a plugin command to player(s)',
+   opts:['all'],
+   example:'/pcmd all spawnanimal wolf'},
+];
+
+// ── Autocomplete state ────────────────────────────────────────────────
+let acIdx = -1;
+
+function getMatches(val){
+  const v = val.trim().toLowerCase();
+  if(!v) return CMDS.slice(); // show all on empty
+  return CMDS.filter(c=>c.cmd.startsWith(v)||c.cmd.slice(1).startsWith(v));
+}
+
+function onInput(){
+  const val = $('cmd-inp').value;
+  const matches = getMatches(val);
+  acIdx = -1;
+  renderAc(matches, val);
+  renderHint(val, matches);
+}
+
+function renderAc(matches, val){
+  const ac = $('autocomplete');
+  if(!matches.length){ac.style.display='none';return}
+  ac.innerHTML = matches.map((c,i)=>`
+    <div class="ac-item" data-cmd="${esc(c.cmd)}" onmousedown="pickAc('${esc(c.cmd)} ')" id="ac-${i}">
+      <span class="ac-cmd">${esc(c.cmd)}</span>
+      <span class="ac-args">${esc(c.args)}</span>
+      <span class="ac-desc">${esc(c.desc)}</span>
+    </div>`).join('');
+  ac.style.display='block';
+}
+
+function hideAc(){$('autocomplete').style.display='none';$('hint-bar').innerHTML=''}
+
+function pickAc(val){
+  $('cmd-inp').value=val;
+  $('autocomplete').style.display='none';
+  $('cmd-inp').focus();
+  renderHint(val,[]);
+}
+
+function renderHint(val, matches){
+  const bar=$('hint-bar');
+  const trimmed=val.trim();
+  if(!trimmed){bar.innerHTML='';return}
+
+  // Find exact command match to show full signature
+  const exact=CMDS.find(c=>trimmed.toLowerCase().startsWith(c.cmd+' ')||trimmed.toLowerCase()===c.cmd);
+  if(exact){
+    const parts=trimmed.split(/\s+/);
+    const typed=parts.length>1?parts.slice(1).join(' '):'';
+    // Show sub-options if available
+    let optHtml='';
+    if(exact.opts&&typed.length<=1){
+      const filtered=exact.opts.filter(o=>o.startsWith(typed));
+      if(filtered.length) optHtml=` &nbsp;<span style="color:#4a6a30">[${filtered.map(o=>`<b style="color:var(--gold)">${o}</b>`).join(' | ')}]</span>`;
+    }
+    bar.innerHTML=`<b>${esc(exact.cmd)}</b> <span style="color:var(--text2)">${esc(exact.args)}</span>${optHtml} &nbsp;<span class="h-desc">— ${esc(exact.desc)}</span>`;
+  } else if(matches.length===1){
+    bar.innerHTML=`<b>${esc(matches[0].cmd)}</b> <span style="color:var(--text2)">${esc(matches[0].args)}</span> <span class="h-desc">— ${esc(matches[0].desc)}</span>`;
+  } else {
+    bar.innerHTML='';
+  }
+}
+
+// ── Keyboard navigation ───────────────────────────────────────────────
+let hist=[], hIdx=-1;
+
+function handleKey(e){
+  const ac=$('autocomplete');
+  const items=ac.querySelectorAll('.ac-item');
+
+  if(e.key==='Tab'){
+    e.preventDefault();
+    if(items.length){
+      // Tab cycles through options
+      acIdx=(acIdx+1)%items.length;
+      items.forEach((el,i)=>el.classList.toggle('selected',i===acIdx));
+      $('cmd-inp').value=items[acIdx].dataset.cmd+' ';
+      renderHint($('cmd-inp').value,[]);
+    }
+    return;
+  }
+  if(e.key==='ArrowDown'&&ac.style.display!=='none'){
+    e.preventDefault();
+    acIdx=Math.min(acIdx+1,items.length-1);
+    items.forEach((el,i)=>el.classList.toggle('selected',i===acIdx));
+    if(acIdx>=0){$('cmd-inp').value=items[acIdx].dataset.cmd+' ';renderHint($('cmd-inp').value,[])}
+    return;
+  }
+  if(e.key==='ArrowUp'){
+    e.preventDefault();
+    if(ac.style.display!=='none'&&acIdx>0){
+      acIdx--;
+      items.forEach((el,i)=>el.classList.toggle('selected',i===acIdx));
+      $('cmd-inp').value=items[acIdx].dataset.cmd+' ';renderHint($('cmd-inp').value,[]);
+    } else {
+      // History navigation
+      hIdx=Math.min(hIdx+1,hist.length-1);
+      $('cmd-inp').value=hist[hIdx]||'';
+      onInput();
+    }
+    return;
+  }
+  if(e.key==='Escape'){hideAc();return}
+  if(e.key==='Enter'){sendCmd();return}
+}
+
+// ── Send command ──────────────────────────────────────────────────────
+async function cmd(c){
+  log('&gt; '+esc(c),'l-cmd');
+  try{
+    const r=await fetch('/api/cmd?c='+encodeURIComponent(c));
+    if(r.ok) log('OK','l-ok');
+    else log('Error '+r.status,'l-err');
+  }catch{log('Server not responding','l-err')}
+}
+
+async function sendCmd(){
+  const inp=$('cmd-inp'), c=inp.value.trim();
+  if(!c) return;
+  hist.unshift(c); hIdx=-1; inp.value='';
+  hideAc(); $('hint-bar').innerHTML='';
+  await cmd(c);
+}
+
+async function broadcast(){
+  const inp=$('bcast-inp'), msg=inp.value.trim();
+  if(!msg) return;
+  inp.value='';
+  await cmd('/say '+msg);
+}
+
+function setTime(){cmd('/time '+$('th').value+' '+$('tm').value)}
+
+function setWeatherLock(lock){
+  $('btn-wlock').classList.toggle('active', lock);
+  $('btn-wunlock').classList.toggle('active', !lock);
+  // wlock/wunlock are built-in plugin commands on the client
+  cmd('/pcmd all '+(lock?'wlock':'wunlock'));
+}
+
+function setTimeLock(lock){
+  $('btn-tlock').classList.toggle('active', lock);
+  $('btn-tunlock').classList.toggle('active', !lock);
+  // tlock/tunlock are built-in plugin commands on the client
+  cmd('/pcmd all '+(lock?'tlock':'tunlock'));
+}
+
+function setEvents(on){
+  $('btn-eon').classList.toggle('active',on);
+  $('btn-eoff').classList.toggle('active',!on);
+  cmd(on?'/pcmd all wevents on':'/pcmd all wevents off');
+}
+
+function kickConfirm(name){
+  if(confirm('Kick '+name+'?')) cmd('/kick '+name);
+}
+
+// ── Render players ────────────────────────────────────────────────────
+function renderPlayers(list){
+  $('pcount').textContent=list.length;
+  $('s-cnt').textContent=list.length;
+  if(!list.length){$('players').innerHTML='<div class="no-players">No players connected</div>';return}
+  $('players').innerHTML=list.map(p=>{
+    const ini=(p.name||'?').slice(0,2).toUpperCase();
+    const adminBadge=p.admin?'<span class="badge admin">ADMIN</span>':'';
+    const plugBadge=(p.plugins&&p.plugins.length)?`<span class="badge plug">${p.plugins.length}px</span>`:'';
+    const plugTip=(p.plugins&&p.plugins.length)?`title="${esc(p.plugins.join(', '))}"`:'';
+    const opBtn=p.admin
+      ?`<button class="bsm" onclick='cmd("/deop ${esc(p.name)}")' title="Remove admin">-OP</button>`
+      :`<button class="bsm gold" onclick='cmd("/op ${esc(p.name)}")' title="Grant admin">+OP</button>`;
+    return `<div class="player-card">
+      <div class="avatar">${ini}</div>
+      <div class="p-info" ${plugTip}>
+        <div class="p-name">${esc(p.name)}${adminBadge}${plugBadge}</div>
+        <div class="p-meta">ID: ${p.id}${p.plugins&&p.plugins.length?' · '+p.plugins.join(', '):''}</div>
+      </div>
+      <div class="p-actions">
+        <button class="bsm gold" onclick='cmd("/tp ${esc(p.name)}")' title="Teleport all to this player">TP</button>
+        ${opBtn}
+        <button class="bsm red" onclick='kickConfirm("${esc(p.name)}")' title="Kick player">KICK</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── Status refresh ────────────────────────────────────────────────────
+async function refresh(){
+  try{
+    const d=await(await fetch('/api/status')).json();
+    $('s-dot').className='dot';
+    $('s-name').textContent=d.name;
+    $('s-port').textContent=d.port;
+    $('s-max').textContent=d.max;
+    renderPlayers(d.players||[]);
+  }catch{
+    $('s-dot').className='dot off';
+    $('s-name').textContent='Disconnected';
+    $('players').innerHTML='<div class="no-players">Cannot reach server</div>';
+  }
+}
+
+setInterval(()=>{$('s-clock').textContent=ts()},1000);
+setInterval(refresh,2000);
+refresh();
+log('Admin panel ready — type <b class="l-cmd">/</b> to browse all commands','l-info');
+log('Use <b class="l-cmd">Tab</b> or <b class="l-cmd">↑↓</b> to navigate suggestions','l-hint');
+</script>
+</body>
+</html>
