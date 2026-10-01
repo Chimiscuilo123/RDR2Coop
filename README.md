@@ -1,17 +1,17 @@
 # RDR2Coop
 
-Mod cooperativo experimental para jugar el modo historia de **Red Dead Redemption 2** con otros jugadores. El proyecto incluye un cliente C++ basado en ScriptHookRDR2, un servidor C# y sincronización de jugadores, entidades y eventos.
+An experimental co-op mod for playing **Red Dead Redemption 2** Story Mode with other players. The project includes a C++ client built on ScriptHookRDR2, a C# server, and synchronization for players, entities, and game events.
 
-## Compatibilidad probada
+## Tested Compatibility
 
-Probado en una versión offline de RDR2 de EMPRESS. La compatibilidad puede variar según la versión del juego y de ScriptHookRDR2.
+Tested with an offline EMPRESS version of RDR2. Compatibility may vary depending on the game build and ScriptHookRDR2 version.
 
-## Captura
+## Screenshot
 
-Dos clientes de RDR2 conectados al mismo servidor. En ambas ventanas se muestra la sesión `RANCH-GEEK RDR2 Server` con 2 de 16 jugadores; cada cliente ve al otro jugador en el mundo.
+Two RDR2 clients connected to the same server. Both windows show the `RANCH-GEEK RDR2 Server` session with 2 of 16 players, and each client can see the other player in the world.
 
-![Dos clientes de RDR2 conectados a la misma sesión cooperativa](assets/rdr2coop-multiplayer.png)
+![Two RDR2 clients connected to the same co-op session](assets/rdr2coop-multiplayer.png)
 
-## Compilación y uso
+## Build and Usage
 
-Consulta la [guía de desarrollo e instalación](INSTRUCCIONES.md) para conocer la estructura del proyecto y los pasos de compilación.
+See the [development and installation guide (Spanish)](INSTRUCCIONES.md) for the project structure and build steps.
