@@ -2,9 +2,9 @@
 
 An experimental co-op mod for playing **Red Dead Redemption 2** Story Mode with other players. The project includes a C++ client built on ScriptHookRDR2, a C# server, and synchronization for players, entities, and game events.
 
-## Tested Compatibility
+## Requirement
 
-Tested with an offline EMPRESS version of RDR2. Compatibility may vary depending on the game build and ScriptHookRDR2 version.
+The client runs using ScriptHookRDR2. [Download ScriptHookRDR2](https://www.dev-c.com/rdr2/scripthookrdr2/).
 
 ## Screenshot
 
